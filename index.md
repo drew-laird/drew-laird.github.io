@@ -20,7 +20,7 @@ My other interests include **film photography**, where I cut and scan it myself.
 # Projects
 
 ### 1. [Diabetes Classification Practice](/diabetes.md)
-### 2. Cycling Unsupervised Model
+### 2. Cycling Training Efficacy - Unsupervised Model
 
 * * *
 
