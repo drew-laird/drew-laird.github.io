@@ -1,8 +1,8 @@
 ---
 layout: default
 ---
-## Experiences
-Connect with me on [LinkedIn](https://www.linkedin.com/in/drew-laird-874ba5208/) and [click here to view my resume](./resume.pdf)!
+# Experiences
+###Connect with me on [LinkedIn](https://www.linkedin.com/in/drew-laird-874ba5208/) and [click here to view my resume](./resume.pdf)!
 ![LinkedIn](https://imgur.com/a/AaSztu9)
 
 # Biography
