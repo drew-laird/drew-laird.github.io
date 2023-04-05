@@ -6,7 +6,7 @@ Text can be **bold**, _italic_, or ~~strikethrough~~.
 
 [Link to another page](./another-page.html).
 
-Testing link to my [resume](./Resume 3:24:23.pdf).
+Testing link to my [resume](./resume.pdf).
 
 There should be whitespace between paragraphs.
 
