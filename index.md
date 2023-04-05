@@ -31,4 +31,6 @@ This article details my involvement as a Student Leader for William & Mary's Bik
 ### *   [A Connecticut man used to huff and puff while bike riding. Now he’s competing and riding hundreds of miles. Here’s why.](https://www.courant.com/2022/07/05/a-connecticut-man-used-to-huff-and-puff-while-bike-riding-now-hes-competing-and-riding-hundreds-of-miles-heres-why/)
 This article goes through my history of cycling and how it grew into a passion. I primarily used this article to help raise awareness for my fundraising event--The Pan-Mass Challenge. This article was super important for establishing my own legitamacy and really making the $6,000 goal seem possible. 
 ### *   [Ways to Flourish - S6 Ep 7 - We Should All Like to Bike!](https://open.spotify.com/episode/6V3FBpk3C2kt61DgfdVlwl?si=19d5d0e0e1784b22)
-In this podcast, I talked with a student and faculty member for the Wellness center on campus. With my co-leader, we talked about what the club does, the benefits of cycling, and the importance of safety and quality cycling infrastructure for both the recreational cyclist and the commuter. 
+In this podcast, I talked with a student and faculty member for the Wellness Center on campus. With my co-leader, we talked about what the club does, the benefits of cycling, and the importance of safety and quality cycling infrastructure for both the recreational cyclist and the commuter. 
+
+
