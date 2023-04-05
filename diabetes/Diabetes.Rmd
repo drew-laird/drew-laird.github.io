@@ -1,0 +1,226 @@
+---
+title: "Diabetes"
+output: html_notebook
+---
+
+```{r}
+library('e1071')
+library('caret')
+library('MASS')
+```
+
+```{r}
+#load data
+diabetes = read.csv('/Users/drewlaird/Documents/Data Science/Diabetes/diabetes.csv')
+#making outcome a factor
+diabetes[["Outcome"]] = factor(diabetes[["Outcome"]])
+head(diabetes)
+#quick info
+nrow(diabetes) #total observations
+nrow(diabetes[diabetes$Outcome == 0,]) #non-diabetics
+nrow(diabetes[diabetes$Outcome == 1,]) #diabetics
+```
+
+```{r}
+#cleaning the data
+sum(is.na(diabetes)) #no NA values -- good.Noticed a lot of zero values for SkinThickness and Insulin, assuming these are NA values, not entirely sure if it's possible to have 0 insulin or not though.
+
+#removing null values
+#correcting for 0 skin
+skin_null = diabetes$SkinThickness != 0
+diabetes.clean = diabetes[skin_null,]
+#correcting for 0 insulin
+insulin_null = diabetes.clean$Insulin != 0
+diabetes.clean = diabetes.clean[insulin_null,]
+
+#data info
+nrow(diabetes.clean) #total observations
+nrow(diabetes.clean[diabetes.clean$Outcome == 0,]) #non-diabetics
+nrow(diabetes.clean[diabetes.clean$Outcome == 1,]) #diabetics
+```
+
+```{r}
+#noticed I lost a lot of information by removing null values, so trying different set of data
+#imputing mean for null values
+diabetes.impute = diabetes
+#imputing SkinThickness mean
+diabetes.impute$SkinThickness = replace(diabetes$SkinThickness, diabetes$SkinThickness==0, mean(diabetes[diabetes$SkinThickness!=0,]$SkinThickness))
+#imputing Insulin mean
+diabetes.impute$Insulin = replace(diabetes$Insulin, diabetes$Insulin==0, mean(diabetes[diabetes$Insulin!=0,]$Insulin))
+
+head(diabetes.impute)
+```
+
+
+```{r}
+#creating a test/train split for clean data
+set.seed(100)
+train.clean_index = sample(1:nrow(diabetes.clean),size = nrow(diabetes.clean)*.8, replace = FALSE)
+train.clean = diabetes.clean[train.clean_index,] #80% of the data
+test.clean = diabetes.clean[-train.clean_index,] #20% of the data
+
+#creating a test/train split for imputed data
+train.impute_index = sample(1:nrow(diabetes.impute),size = nrow(diabetes.impute)*.8, replace = FALSE)
+train.impute = diabetes.impute[train.impute_index,] #80% of the data
+test.impute = diabetes.impute[-train.impute_index,] #20% of the data
+
+#creating balanced data set from the imputed data
+train.impute.balanced = data.frame(downSample(train.impute,train.impute$Outcome)[1:9])
+
+#creating a train/validate/test split for tuning parameter applications
+tvt.train = train.impute
+val_test_index = sample(1:nrow(test.impute),size = nrow(test.impute)*.5, replace = FALSE)
+tvt.validate = test.impute[val_test_index,]
+tvt.test = test.impute[-val_test_index,]
+
+```
+
+```{r}
+#logistic regression -- test/train on clean data
+d_log_clean = glm(Outcome~., data = train.clean, family = 'binomial')
+#making predictions on the test data
+d_log_clean.preds = predict(d_log_clean, newdata = test.clean, type = 'response')
+d_log_clean.preds = factor(d_log_clean.preds>.5, labels = c(0,1))
+#making a confusion matrix
+d_log_clean.cf = confusionMatrix(data = d_log_clean.preds, reference = test.clean$Outcome)
+d_log_clean.cf
+
+#are all the variables significant?
+summary(d_log_clean) #doesn't look like it, maybe need some variable selection
+```
+
+```{r}
+#logistic regression -- test/train on imputed data
+d_log_impute = glm(Outcome~., data = train.impute, family = 'binomial')
+#making predictions on the test data
+d_log_impute.preds = predict(d_log_impute, newdata = test.impute, type = 'response')
+d_log_impute.preds = factor(d_log_impute.preds>.5, labels = c(0,1))
+#making a confusion matrix
+d_log_impute.cf = confusionMatrix(data = d_log_impute.preds, reference = test.impute$Outcome)
+d_log_impute.cf #looks like imputed data keeps more important information
+
+#are all the variables significant?
+summary(d_log_impute) #doesn't look like it, maybe need some variable selection
+```
+
+```{r}
+#logisitc regression -- backwards and forwards stepwise variable selection
+d_logstepback = stepAIC(d_log_impute, direction = "backward", trace = FALSE)
+d_logstepforward = stepAIC(d_log_impute, direction = "forward", trace = FALSE)
+#what variables were selected?
+d_logstepback
+d_logstepforward #selected all the variables in this one, let's see if there's a diff
+#creating predictions
+d_logstepback.preds = predict(d_logstepback, newdata = test.impute, type = 'response')
+d_logstepback.preds = factor(d_logstepback.preds>.5, labels = c(0,1))
+#making a confusion matrix
+d_logstepback.cf = confusionMatrix(data = d_logstepback.preds, reference = test.impute$Outcome)
+d_logstepback.cf #seems like there is an increase in accuracy with the additional variables so we'll keep
+
+```
+
+
+```{r}
+#logistic regression -- cross-validation with imputed data
+#creating cross validation control
+cv_ctrl = trainControl(method = "repeatedcv", number = 10, repeats = 3)
+#training bayesian generalized linear model 
+d_logcv = train(Outcome~., data = train.impute, method = "bayesglm", trControl = cv_ctrl)
+#making predictions
+d_logcv.preds = predict(d_logcv, newdata = test.impute, type = 'prob')
+#converting to 0 and 1 factor
+d_logcv.preds = round(d_logcv.preds$'1')
+d_logcv.preds = factor(d_logcv.preds)
+
+d_logcv.cf = confusionMatrix(data = d_logcv.preds, reference = test.impute$Outcome)
+d_logcv.cf #no improvement, let's try a balanced data set
+```
+
+```{r}
+#logistic regression -- cross validation with balanced imputed data
+
+#training bayesian generalized linear model 
+d_logcv = train(Outcome~., data = train.impute.balanced, method = "bayesglm", trControl = cv_ctrl)
+#making predictions based on the unbalanced test data
+d_logcv.preds = predict(d_logcv, newdata = test.impute, type = 'prob')
+#converting to 0 and 1 factor
+d_logcv.preds = round(d_logcv.preds$'1')
+d_logcv.preds = factor(d_logcv.preds)
+
+d_logcv.cf = confusionMatrix(data = d_logcv.preds, reference = test.impute$Outcome)
+d_logcv.cf #decrease in accuracy, but increase in specificity which in this case might be more desirable
+
+```
+
+```{r}
+#random forest classification -- cross validation with clean data
+d_rfcv_clean = train(Outcome~., data = train.clean, method = "rf", trControl = cv_ctrl)
+#creating prediction data frame
+d_rfcv_clean.preds = predict(d_rfcv_clean, newdata = test.clean, type = 'prob')
+#convert predictions to 0s and 1s
+d_rfcv_clean.preds = round(d_rfcv_clean.preds$'1')
+#turning it into a factor
+d_rfcv_clean.preds = factor(d_rfcv_clean.preds)
+
+d_rfcv_clean.cf = confusionMatrix(data = d_rfcv_clean.preds, reference = test.clean$Outcome)
+d_rfcv_clean.cf #decrease in accuracy and specificity
+```
+
+```{r}
+#random forest classification -- cross validation with imputed data
+d_rfcv_impute = train(Outcome~., data = train.impute, method = "rf", trControl = cv_ctrl)
+#creating prediction data frame
+d_rfcv_impute.preds = predict(d_rfcv_impute, newdata = test.impute, type = 'prob')
+#convert predictions to 0s and 1s
+d_rfcv_impute.preds = round(d_rfcv_impute.preds$'1')
+#turning it into a factor
+d_rfcv_impute.preds = factor(d_rfcv_impute.preds)
+
+d_rfcv_impute.cf = confusionMatrix(data = d_rfcv_impute.preds, reference = test.impute$Outcome)
+d_rfcv_impute.cf #highest balanced accuracy so far, good specificity value
+```
+
+```{r}
+#KNN classification with imputed data
+
+#writing a function for balanced accuracy to validate model performance
+balanced_accuracy = function(data, reference) {
+  (specificity(data = data, reference = reference)+sensitivity(data = data, reference = reference))/2
+}
+#calculating validation accuracy for k-values from 1-50
+knn_val = c() #vector to store balanced accuracies for different k-values
+for (i in 1:50) {
+  d_knn_impute =  knn3(Outcome~., data = train.impute, k = i)
+  d_knn_impute.preds = predict(d_knn_impute, newdata = tvt.validate, type = 'prob')
+  #convert predictions to 0s and 1s
+  d_knn_impute.preds = round(d_knn_impute.preds[,2])
+  #turning it into a factor
+  d_knn_impute.preds = factor(d_knn_impute.preds)
+  knn_val = c(knn_val,balanced_accuracy(data = d_knn_impute.preds, reference = tvt.validate$Outcome))
+}
+#plotting k vals and corresponding balanced accuracies
+plot(x=1:50, y = knn_val,xlab = "k value", ylab = 'balanced accuracy',type = 'h',main = 'KNN balanced accuracies for different k values')
+
+#testing optimal k val (k=6) with the test data
+d_knn_optimal = knn3(Outcome~., data = train.impute, k = which.max(knn_val))
+d_knn_optimal.preds = predict(d_knn_optimal, newdata = tvt.test, type = 'prob')
+#convert predictions to 0s and 1s
+d_knn_optimal.preds = round(d_knn_optimal.preds[,2])
+#turning it into a factor
+d_knn_optimal.preds = factor(d_knn_optimal.preds)
+
+#optimal knn confusion matrix on unseen test data
+d_knn_optimal.cf = confusionMatrix(data = d_knn_optimal.preds, reference = tvt.test$Outcome)
+d_knn_optimal.cf #not as good accuracy as in the validation
+```
+
+```{r}
+#SVM classification using the RBF kernel with imputed data
+d_svm_impute = svm(formula = Outcome ~ ., data = train.impute, type = 'C-classification', kernel = 'radial')
+#create predictions
+d_svm_impute.preds = predict(d_svm_impute, newdata = test.impute)
+
+#creating confusion matrix
+d_svm_impute.cf = confusionMatrix(data = d_svm_impute.preds, reference = test.impute$Outcome)
+d_svm_impute.cf
+```
