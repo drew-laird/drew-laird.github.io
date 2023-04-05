@@ -13,7 +13,7 @@ I'm deeply interested in applying data-driven models and insights to untradition
 
 My other interests include **film photography**, where I cut and scan it myself. If you see me, I probably have one of my cameras on me. Feel free to check out some of my favorite photos!
 
-#Projects
+# Projects
 
 1. [Diabetes Classification Practice](/diabetes.md).
 2. Cycling Unsupervised Model
