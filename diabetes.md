@@ -4,6 +4,5 @@ layout: default
 
 # Diabetes Classification Project
 
-
-
-[back](./)
+Download for my [RStudio Notebook File](/diabetes/Diabetes.Rmd).
+View the [diabetes data](/diabetes/diabetes.csv).
