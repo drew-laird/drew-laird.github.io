@@ -3,7 +3,7 @@ layout: default
 ---
 # Experiences
 ### Connect with me on [LinkedIn](https://www.linkedin.com/in/drew-laird-874ba5208/) and [click here to view my resume](./resume.pdf)! If you want to reach me, you can also send me an email at [dalaird@wm.edu](mailto:dalaird@wm.edu).
-![LinkedIn](https://i.imgur.com/TgLyV5E.png)
+![LinkedIn+Email](https://i.imgur.com/CrYrHqX.png)
 
 * * *
 
