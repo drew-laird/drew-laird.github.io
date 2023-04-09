@@ -39,4 +39,4 @@ In this podcast, I talked with a student and faculty member for the Wellness Cen
 
 # Photo Gallery
 
-### [Click here to view some of my favorite film photos!](./gallery/md)
+### [Click here to view some of my favorite film photos!](./gallery.md)
