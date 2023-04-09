@@ -20,7 +20,7 @@
 
 * * *
 
-## too artsy
+## "too artsy"
 ![img5](https://raw.githubusercontent.com/drew-laird/drew-laird.github.io/main/assets/gallery/5.jpg)
 
 * * *
