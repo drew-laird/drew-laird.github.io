@@ -1,3 +1,3 @@
-#Photo Gallery
+# Photo Gallery
 
 [Return to home page](./)
