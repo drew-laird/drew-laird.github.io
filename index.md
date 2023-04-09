@@ -13,7 +13,7 @@ My name is **Drew Laird**. I'm currently a senior at William & Mary studying **C
 
 I'm deeply interested in applying data-driven models and insights to untraditional and challenging problems. On top of practicing on Kaggle datasets, I'm also exploring an unsupervised model for biological and training data I've collected on myself in one of my main passions: **cycling**. Check out or follow my [Strava](https://www.strava.com/athletes/35706624) to see the data and my progress! (When I'm not injured) You can find me biking hundreds of miles a week around the Williamsburg area, competing for Tribe Cycling, and leading inclusive bike initiatives on my campus as the student leader for The Bike Alliance. Two of my crowning achievements was raising **$7,545** dollars for a **186-mile charity ride** for cancer called the [Pan-Mass Challenge](https://profile.pmc.org/DL0332) and placing in **second in my school's home race** in a field of 60+ riders. 
 
-My other interests include **film photography**, where I cut and scan it myself. If you see me, I probably have one of my cameras on me. Feel free to check out some of my favorite photos! I am also currently employed by **Student Unions & Engagement** as an **Area Supervisor**, where I currently am responsible for a team of nine employees. 
+My other interests include **film photography**, where I cut and scan it myself. If you see me, I probably have one of my cameras on me. [Feel free to check out some of my favorite photos!](/gallery.md) I am also currently employed by **Student Unions & Engagement** as an **Area Supervisor**, where I currently am responsible for a team of nine employees. 
 
 * * *
 
@@ -35,4 +35,6 @@ This article goes through my history of cycling and how it grew into a passion. 
 ### •   [Ways to Flourish - S6 Ep 7 - We Should All Like to Bike!](https://open.spotify.com/episode/6V3FBpk3C2kt61DgfdVlwl?si=19d5d0e0e1784b22)
 In this podcast, I talked with a student and faculty member for the Wellness Center on campus. With my co-leader, we talked about what the club does, the benefits of cycling, and the importance of safety and quality cycling infrastructure for both the recreational cyclist and the commuter. 
 
+* * *
 
+# [Gallery](./gallery/md)
