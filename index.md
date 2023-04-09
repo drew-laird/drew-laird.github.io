@@ -37,4 +37,4 @@ In this podcast, I talked with a student and faculty member for the Wellness Cen
 
 * * *
 
-# [Gallery](./gallery/md)
+# [Photo Gallery](./gallery/md)
