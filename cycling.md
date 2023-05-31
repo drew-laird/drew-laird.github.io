@@ -6,6 +6,8 @@ layout: default
 
 ## [Click here to read my 19-page writeup](/cycling/A Deep Dive in Cycling Data Analytics.pdf)!
 
+***
+
 ## Summary
 
 Between December 28th, 2022 to March 5th, 2023, I trained regularly for the collegiate cycling season. Unfortunately, I broke my hand during one of my races and have been mostly unable to exercise for the last month and a half. In the meantime, I've investigated the quality of my training. I have never had a coach, but, due to my combined obsessions with speed, data, and research, I've learned a lot about training philosophies in my free time. If you've ever sat in the car with me on a long drive, you'll have heard a lot of cycling training podcasts. 
