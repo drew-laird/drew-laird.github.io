@@ -20,7 +20,7 @@ My other interests include **film photography**, where I cut and scan it myself.
 # Projects
 
 ### 1. [Diabetes Classification Practice](/diabetes.md)
-### 2. Cycling Training Efficacy - Unsupervised Model
+### 2. [Cycling Training Efficacy Analysis](/cycling.md)
 ### 3. [Wayfair Independent Final Project - SKU Success Predictors w/ Simple Linear Regression](/final_proj_redacted.pdf)
 _Note: Some of the data and insights have to be blocked out because they contain propriatary information_ 
 
