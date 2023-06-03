@@ -14,12 +14,19 @@ Between December 28th, 2022 to March 5th, 2023, I trained regularly for the coll
 
 If you want a *semi*-brief, but more specific rundown of cycling training philosophy, [check out another paper I wrote on the topic](/cycling/background.pdf). 
 
-General traning philosophy for endurance training revolves around finding what intensities (measured with perceived exertion, heart rate, and/or power) lead to optimal results. Most athletes will do more low-intensity work in the off-season and increase intensity as the season progresses. However, the specific distributions of these intensities varies according to what training philosophy someone subscribes to. Additionally, traning philosophy depends on both the body of the athlete and the time constraints of an athlete. 
+General traning philosophy for endurance training revolves around finding what intensities (measured with perceived exertion, heart rate, and/or power) lead to optimal results. Most athletes will do more low-intensity work in the off-season and increase intensity as the season progresses. However, the specific distributions of these intensities varies according to what training philosophy someone subscribes to. Additionally, training philosophy depends on both the body of the athlete and the time constraints of the athlete. 
 
-The ultimate goal of my research is to find an empirical method of comparision (to myself and others). Only with a numerical "score", could you ever really evaluate whether or not what you were doing was working in the short-term. Additionally, this tool could be a useful tool for athletes in a fitness plateau trying to find what exercises would take them to the next level as fast as possible.
+The ultimate goal of my research is to find an empirical method of comparision (to myself and others). Only with a numerical "score", could you ever really evaluate whether or not what you were doing was working in the short-term. Additionally, this tool could be useful for athletes in a fitness plateau trying to find what exercises would take them to the next level as fast as possible.
 
 Eventually, if I develop a fitness score that's better than just an athlete's or coach's educated guess, you could take steps to optimize this score. Similar principles could later be applied to other endurance exercises, or even other sports if they had the same quanitty and quality of data.
 
 If any of this sounds interesting to you, don't hesitate to [send me an email](mailto:dalaird@wm.edu)!
 
 [Return to home page](./)
+
+***
+
+## Research Log
+
+**6/2/23**: One of the ideas I planned on investigating in conclusion of my paper was using time-series analysis. The data itself is recorded in regular intervals of each second. My current idea is that if I can quantify the lag between heart rate and power, theoretically a shorter lag should indicate a higher level of fitness, or, at the very least, less fatigue. This, taken in account with sleep, average heart rate, and average power, could provide some interesting insights. Current next steps involve learning more about time-series analysis.
+Resources: [Time Series Analysis](https://www.youtube.com/watch?v=Prpu_U5tKkE), [Detecting time lag between a pair of time series using visibility graph algorithm](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8925311/).
