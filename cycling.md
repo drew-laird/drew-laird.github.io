@@ -24,9 +24,4 @@ If any of this sounds interesting to you, don't hesitate to [send me an email](m
 
 [Return to home page](./)
 
-***
 
-## Research Log
-
-**6/2/23**: One of the ideas I planned on investigating in conclusion of my paper was using time-series analysis. The data itself is recorded in regular intervals of each second. My current idea is that if I can quantify the lag between heart rate and power, theoretically a shorter lag should indicate a higher level of fitness, or, at the very least, less fatigue. This, taken in account with sleep, average heart rate, and average power, could provide some interesting insights. Current next steps involve learning more about time-series analysis.
-Resources: [Time Series Analysis](https://www.youtube.com/watch?v=Prpu_U5tKkE), [Detecting time lag between a pair of time series using visibility graph algorithm](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8925311/).
