@@ -9,8 +9,6 @@ layout: default
 
 # Biography
 
-## Drew Laird
-
 I’m **Drew Laird**, an **AI Engineer at Snorkel AI** in Washington, DC, where I build **synthetic data generation pipelines** and **evaluation frameworks** that help language models learn expert-level skills. My work includes designing agentic system architectures, writing generation blueprints and rubrics, and creating scalable evaluators to validate data quality—including **LLM-as-a-judge** style evaluators deployed in production. I have experience collaborating with most frontier labs, commercial clients, and federal / DOW sponsors.
 
 Before Snorkel, I was a **Machine Learning Engineer at MITRE**, where I led applied research at the intersection of human behavior and machine learning—most notably an effort focused on using LLMs as *human proxies* to study behavioral change in response to media influence. I also served as lead data scientist and technical point of contact on a real-time natural disaster risk analysis platform, working with geospatial and sensor/satellite data and building predictive models for dam incident risk.
