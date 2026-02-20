@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FAF9F7">
+    <title>March 1st</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✦</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #FAF9F7;
+            --card: #FFFFFF;
+            --text: #2C2C2C;
+            --text-light: #7A7A7A;
+            --accent: #B8A99A;
+            --border: #EDEBE8;
+            --cream: #F0EBE4;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ---- Hero ---- */
+        .hero {
+            min-height: 100vh;
+            min-height: 100svh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            background: linear-gradient(180deg, #FFFFFF 0%, var(--bg) 100%);
+        }
+
+        .hero-date {
+            font-weight: 300;
+            font-size: 0.8rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .divider {
+            width: 40px;
+            height: 1px;
+            background: var(--accent);
+            margin: 0 auto 1.5rem;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2.8rem, 7vw, 4.5rem);
+            font-weight: 400;
+            line-height: 1.15;
+            margin-bottom: 1rem;
+        }
+
+        .hero-sub {
+            font-weight: 300;
+            font-size: 1.05rem;
+            color: var(--text-light);
+            max-width: 360px;
+            line-height: 1.7;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            animation: float 2.5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); opacity: 0.6; }
+            50% { transform: translateY(6px); opacity: 1; }
+        }
+
+        /* ---- Section shared ---- */
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--text-light);
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        /* ---- Itinerary ---- */
+        .itinerary {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 5rem 1.5rem 4rem;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 8px;
+            bottom: 0;
+            width: 1px;
+            background: var(--border);
+        }
+
+        .stop {
+            position: relative;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .stop:last-child { margin-bottom: 0; }
+        .stop:last-child ~ .timeline::before { display: none; }
+
+        .stop.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stop-dot {
+            position: absolute;
+            left: -40px;
+            top: 4px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 2px solid var(--accent);
+            z-index: 1;
+        }
+
+        .stop.optional .stop-dot {
+            border-style: dashed;
+        }
+
+        .stop-time {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+            margin-bottom: 0.6rem;
+            text-transform: uppercase;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-img-wrap {
+            width: 100%;
+            height: 220px;
+            background: var(--cream);
+            overflow: hidden;
+        }
+
+        .card-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover .card-img-wrap img {
+            transform: scale(1.03);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-name {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.35rem;
+            font-weight: 500;
+            margin-bottom: 0.2rem;
+        }
+
+        .card-loc {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .card-loc svg {
+            width: 12px;
+            height: 12px;
+            flex-shrink: 0;
+        }
+
+        .card-desc {
+            font-size: 0.92rem;
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 1.25rem;
+        }
+
+        .tag {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.3rem 0.75rem;
+            border-radius: 100px;
+            background: var(--cream);
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .cal-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.25s ease;
+        }
+
+        .cal-link:hover {
+            background: var(--cream);
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
+        .cal-link svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* ---- Map ---- */
+        .map-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 2rem;
+        }
+
+        .map-wrap {
+            height: 420px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        #map { height: 100%; width: 100%; }
+
+        .marker-num {
+            width: 26px;
+            height: 26px;
+            background: var(--text);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+        }
+
+        .leaflet-popup-content-wrapper {
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .leaflet-popup-content {
+            margin: 10px 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+
+        .leaflet-popup-content strong {
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .leaflet-popup-content span {
+            color: var(--text-light);
+            font-size: 0.75rem;
+        }
+
+        /* ---- Footer ---- */
+        footer {
+            text-align: center;
+            padding: 4rem 1.5rem 2.5rem;
+        }
+
+        footer p {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-top: 1.25rem;
+            font-weight: 300;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 600px) {
+            .card-img-wrap { height: 180px; }
+            .card-body { padding: 1.25rem; }
+            .map-wrap { height: 320px; }
+            .itinerary { padding: 4rem 1.25rem 3rem; }
+            .timeline { padding-left: 36px; }
+            .stop-dot { left: -36px; }
+            .timeline::before { left: 7px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+    <p class="hero-date">Sunday, March 1, 2026</p>
+    <div class="divider"></div>
+    <h1>The Date of a Lifetime</h1>
+    <p class="hero-sub">An afternoon of art, good food (better company), and elite people watching.</p>
+    <div class="scroll-hint">
+        <span>Scroll</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14"/>
+            <path d="M19 12l-7 7-7-7"/>
+        </svg>
+    </div>
+</section>
+
+<!-- ============ ITINERARY ============ -->
+<section class="itinerary">
+    <p class="section-label">The Itinerary</p>
+
+    <div class="timeline">
+
+        <!-- Stop 1: Lunch at Bread Furst -->
+        <div class="stop">
+            <div class="stop-dot"></div>
+            <p class="stop-time">12 : 30 pm</p>
+            <div class="card">
+                <div class="card-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&h=500&fit=crop&q=80"
+                         alt="Coffee and pastries at a café" loading="lazy">
+                </div>
+                <div class="card-body">
+                    <h3 class="card-name">Lunch at Bread Furst</h3>
+                    <div class="card-loc">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        Inside The Phillips Collection, 1600 21st St NW
+                    </div>
+                    <p class="card-desc">A James Beard Award-winning bakery café right inside the museum — named one of the Washington Post's 5 best museum cafés in DC. The croissants are legendary (buttery, flaky, many layers), the pain au chocolat is a must, and their seasonal sandwiches use locally sourced ingredients that rotate on a whim. Pair with a Counter Culture coffee or a chai latte.</p>
+                    <a class="cal-link"
+                       href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Lunch%20at%20Bread%20Furst&amp;dates=20260301T123000/20260301T131500&amp;ctz=America/New_York&amp;location=Bread%20Furst%20at%20The%20Phillips%20Collection%2C%201600%2021st%20St%20NW%2C%20Washington%2C%20DC%2020009&amp;details=Lunch%20at%20Bread%20Furst%20caf%C3%A9%20inside%20The%20Phillips%20Collection"
+                       target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        Add to Calendar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stop 2: The Phillips Collection -->
+        <div class="stop">
+            <div class="stop-dot"></div>
+            <p class="stop-time">1 : 15 pm</p>
+            <div class="card">
+                <div class="card-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=800&h=500&fit=crop&q=80"
+                         alt="Gallery with paintings on the wall" loading="lazy">
+                </div>
+                <div class="card-body">
+                    <h3 class="card-name">The Phillips Collection</h3>
+                    <div class="card-loc">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        1600 21st St NW, Washington, DC
+                    </div>
+                    <p class="card-desc">America's first museum of modern art. Home to Renoir's <em>Luncheon of the Boating Party</em> and a beautiful rotating collection of impressionist and contemporary works. We wander at our own pace.</p>
+                    <a class="cal-link"
+                       href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=The%20Phillips%20Collection&amp;dates=20260301T131500/20260301T143000&amp;ctz=America/New_York&amp;location=The%20Phillips%20Collection%2C%201600%2021st%20St%20NW%2C%20Washington%2C%20DC%2020009&amp;details=Explore%20one%20of%20America%27s%20first%20museums%20of%20modern%20art"
+                       target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        Add to Calendar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stop 3: Second Story Books (optional) -->
+        <div class="stop optional">
+            <div class="stop-dot"></div>
+            <p class="stop-time">2 : 30 pm</p>
+            <div class="card">
+                <div class="card-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=800&h=500&fit=crop&q=80"
+                         alt="Shelves filled with books" loading="lazy">
+                </div>
+                <div class="card-body">
+                    <span class="tag">Optional stop along the way</span>
+                    <h3 class="card-name">Second Story Books</h3>
+                    <div class="card-loc">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        2000 P St NW, Washington, DC
+                    </div>
+                    <p class="card-desc">A Dupont Circle institution packed floor-to-ceiling with used and rare books — right on the walk from the museum to the circle. Worth ducking into if something in the window catches your eye.</p>
+                    <a class="cal-link"
+                       href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Second%20Story%20Books&amp;dates=20260301T143000/20260301T145000&amp;ctz=America/New_York&amp;location=Second%20Story%20Books%2C%202000%20P%20St%20NW%2C%20Washington%2C%20DC%2020036&amp;details=Quick%20browse%20at%20Second%20Story%20Books"
+                       target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        Add to Calendar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stop 4: Dupont Circle -->
+        <div class="stop">
+            <div class="stop-dot"></div>
+            <p class="stop-time">~ 3 : 00 pm</p>
+            <div class="card">
+                <div class="card-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1591109719051-08ff9f57bb6b?w=800&h=500&fit=crop&q=80"
+                         alt="The fountain at Dupont Circle, Washington DC" loading="lazy">
+                </div>
+                <div class="card-body">
+                    <h3 class="card-name">Dupont Circle</h3>
+                    <div class="card-loc">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        Dupont Circle, Washington, DC
+                    </div>
+                    <p class="card-desc">The grand finale. Grab a bench by the marble fountain and settle in for some elite people watching. Officially, the date ends here at 3. Unofficially? That depends entirely on the company.</p>
+                    <a class="cal-link"
+                       href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Dupont%20Circle&amp;dates=20260301T145000/20260301T150000&amp;ctz=America/New_York&amp;location=Dupont%20Circle%2C%20Washington%2C%20DC%2020036&amp;details=People%20watching%20at%20Dupont%20Circle"
+                       target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        Add to Calendar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ============ MAP ============ -->
+<section class="map-section">
+    <p class="section-label">The Route</p>
+    <div class="map-wrap">
+        <div id="map"></div>
+    </div>
+    <div style="text-align:center; margin-top:1rem;">
+        <a class="cal-link" style="padding:0.6rem 1.25rem;"
+           href="https://www.google.com/maps/dir/The+Phillips+Collection,+1600+21st+St+NW,+Washington,+DC+20009/Second+Story+Books,+2000+P+St+NW,+Washington,+DC+20036/Dupont+Circle,+Washington,+DC+20036/@38.910,-77.044,16z/data=!3m1!4b1!4m2!4m1!3e2"
+           target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+            Open walking directions in Google Maps
+        </a>
+    </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+    <div class="divider"></div>
+    <p>Official end time: 3 pm</p>
+    <p style="margin-top: 0.4rem; font-style: italic;">Unofficial end time: to be determined&nbsp;✦</p>
+</footer>
+
+<!-- ============ SCRIPTS ============ -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function () {
+
+    /* -- Scroll-triggered animations -- */
+    var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+            if (e.isIntersecting) e.target.classList.add('visible');
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.stop').forEach(function (el, i) {
+        el.style.transitionDelay = (i * 0.08) + 's';
+        observer.observe(el);
+    });
+
+    /* -- Map -- */
+    var stops = [
+        { lat: 38.9116, lng: -77.0469, name: 'Bread Furst + The Phillips Collection', addr: '1600 21st St NW', num: 1 },
+        { lat: 38.9087, lng: -77.0453, name: 'Second Story Books',                    addr: '2000 P St NW', num: 2 },
+        { lat: 38.9096, lng: -77.0434, name: 'Dupont Circle',                         addr: 'Dupont Circle NW', num: 3 }
+    ];
+
+    var bounds = L.latLngBounds(stops.map(function (s) { return [s.lat, s.lng]; }));
+
+    var map = L.map('map', {
+        scrollWheelZoom: false,
+        zoomControl: true
+    }).fitBounds(bounds, { padding: [50, 50] });
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+        maxZoom: 19,
+        subdomains: 'abcd'
+    }).addTo(map);
+
+    stops.forEach(function (s) {
+        var icon = L.divIcon({
+            className: '',
+            html: '<div class="marker-num">' + s.num + '</div>',
+            iconSize: [26, 26],
+            iconAnchor: [13, 13]
+        });
+
+        L.marker([s.lat, s.lng], { icon: icon })
+            .addTo(map)
+            .bindPopup('<strong>' + s.name + '</strong><span>' + s.addr + '</span>');
+    });
+
+
+})();
+</script>
+</body>
+</html>
